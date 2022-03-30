@@ -1,4 +1,4 @@
-package com.sorsix.fitness.fitness
+package com.sorsix.fitness
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

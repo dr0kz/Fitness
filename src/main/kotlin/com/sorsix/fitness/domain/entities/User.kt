@@ -1,6 +1,6 @@
-package com.sorsix.fitness.fitness.domain.entities
+package com.sorsix.fitness.domain.entities
 
-import com.sorsix.fitness.fitness.domain.enum.Role
+import com.sorsix.fitness.domain.enum.Role
 import javax.persistence.*
 
 @Entity

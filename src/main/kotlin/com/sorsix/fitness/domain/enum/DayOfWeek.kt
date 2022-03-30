@@ -1,4 +1,4 @@
-package com.sorsix.fitness.fitness.domain.enum
+package com.sorsix.fitness.domain.enum
 
 enum class DayOfWeek {
     MONDAY,

@@ -1,4 +1,4 @@
-package com.sorsix.fitness.fitness.domain.entities
+package com.sorsix.fitness.domain.entities
 
 import javax.persistence.*
 

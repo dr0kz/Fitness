@@ -1,4 +1,4 @@
-package com.sorsix.fitness.fitness
+package com.sorsix.fitness
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
