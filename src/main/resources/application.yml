@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5500/Fitness
+    username: postgres
+    password: 1q2w3e4r5t
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
