@@ -1,4 +1,4 @@
-package com.sorsix.fitness.api;
+package com.sorsix.fitness.api.controller;
 
 import com.sorsix.fitness.service.BoughtProgramService
 import org.springframework.web.bind.annotation.RequestMapping;
