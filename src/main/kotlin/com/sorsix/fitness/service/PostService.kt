@@ -1,7 +1,6 @@
 package com.sorsix.fitness.service
 
 import com.sorsix.fitness.domain.entities.Post
-import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.repository.PostRepository
 import com.sorsix.fitness.repository.UserRepository
 import org.springframework.data.domain.PageRequest
@@ -18,5 +17,37 @@ class PostService(val postRepository: PostRepository, val userRepository: UserRe
         val user = this.userRepository.findById(userId).get()
         val post = Post(description = description, image = image, user = user)
         return this.postRepository.save(post)
+    }
+
+    fun updatePost(id: Long, description: String, image: String){
+        val post = this.postRepository.findById(id)
+        if(post.isPresent){
+            this.postRepository.update(id, description, image)
+        }
+    }
+
+    //TODO
+    //Kako da znaeme oti userot go lajknal postot?
+    //nova tabela UsersPosts
+    //
+    fun likePost(id: Long){
+        val post = this.postRepository.findById(id)
+        if(post.isPresent){
+            this.postRepository.like(id)
+        }
+    }
+
+    fun dislikePost(id: Long){
+        val post = this.postRepository.findById(id)
+        if(post.isPresent){
+            this.postRepository.dislike(id)
+        }
+    }
+
+    fun deletePost(id: Long) {
+        val post = this.postRepository.findById(id)
+        if(post.isPresent){
+            this.postRepository.delete(post.get())
+        }
     }
 }
