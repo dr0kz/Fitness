@@ -1,7 +1,8 @@
 package com.sorsix.fitness.service
 
+import com.sorsix.fitness.repository.DayRepository
 import org.springframework.stereotype.Service
 
 @Service
-class DayService {
+class DayService(val dayRepository : DayRepository) {
 }
