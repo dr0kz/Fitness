@@ -23,5 +23,5 @@ data class Day(
     val video: String = "",
 
     @ManyToOne
-    val week: Week = Week()
+    val workoutProgram: WorkoutProgram = WorkoutProgram()
 )

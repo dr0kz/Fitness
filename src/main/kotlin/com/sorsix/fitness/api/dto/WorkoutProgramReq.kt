@@ -4,6 +4,5 @@ data class WorkoutProgramReq (
     val name: String,
     val price: Int,
     val description: String,
-    val userTrainerId: Long,
-    val weeks: List<WeekReq>
+    val weeks: List<DayReq>
 )

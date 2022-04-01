@@ -7,16 +7,32 @@ import org.springframework.stereotype.Service
 @Service
 class WorkoutProgramService(val workoutProgramRepository: WorkoutProgramRepository) {
 
-    fun findAllWorkoutPrograms() : List<WorkoutProgram>{
-        return this.workoutProgramRepository.findAll()
+    fun findAllWorkoutPrograms() : List<WorkoutProgram> =
+        this.workoutProgramRepository.findAll()
+
+    fun findAllWorkoutProgramsByTrainer(trainerId: Long): List<WorkoutProgram> =
+        this.workoutProgramRepository.findAllByUserTrainerId(trainerId)
+
+    fun findWorkoutProgramByTrainer(workoutProgramId: Long,trainerId: Long): WorkoutProgram? =
+        this.workoutProgramRepository.findWorkoutProgramByIdAndUserTrainerId(workoutProgramId,trainerId)
+
+    fun deleteWorkoutProgram(workoutProgramId: Long, trainerId: Long) =
+        this.workoutProgramRepository.deleteWorkoutProgramByIdAndUserTrainerId(workoutProgramId,trainerId)
+
+//    fun createWorkoutProgram(trainerId: Long) {
+//        this.workoutProgramRepository.
+//    }
+
+    fun updateWorkoutProgramInfo(workoutProgramId: Long, trainerId: Long,
+                                 name: String, price: Int, description: String) {
+        val workoutProgram = findWorkoutProgramByTrainer(workoutProgramId,trainerId)
+        if (workoutProgram!=null) {
+            this.workoutProgramRepository.updateInfo(workoutProgramId,trainerId,name,price,description)
+        }
     }
 
-    fun findAllWorkoutProgramsByTrainer(trainerId: Long): List<WorkoutProgram> {
-        return this.workoutProgramRepository.findAllByUserTrainerId(trainerId)
-    }
-
-    fun findWorkoutProgramByTrainer() {
-        TODO()
-    }
-
+//    fun updateWorkoutProgramBody(workoutProgramId: Long, trainerId: Long) {
+//
+//    }
+    
 }
