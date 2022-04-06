@@ -1,6 +1,8 @@
 package com.sorsix.fitness.domain.entities
 
 import com.sorsix.fitness.domain.enum.DayOfWeek
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -22,6 +24,9 @@ data class Day(
 
     val video: String = "",
 
+    val week: Int = 1,
+
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     val workoutProgram: WorkoutProgram = WorkoutProgram()
 )
