@@ -1,6 +1,10 @@
 package com.sorsix.fitness.domain.enum
 
-enum class Role {
+import org.springframework.security.core.GrantedAuthority
+
+enum class Role : GrantedAuthority {
     TRAINEE,
-    TRAINER
+    TRAINER;
+
+    override fun getAuthority(): String = name
 }
