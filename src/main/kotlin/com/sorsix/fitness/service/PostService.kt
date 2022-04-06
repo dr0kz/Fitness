@@ -1,13 +1,19 @@
 package com.sorsix.fitness.service
 
 import com.sorsix.fitness.domain.entities.Post
+import com.sorsix.fitness.domain.entities.UserLikePost
 import com.sorsix.fitness.repository.PostRepository
+import com.sorsix.fitness.repository.UserLikePostRepository
 import com.sorsix.fitness.repository.UserRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
-class PostService(val postRepository: PostRepository, val userRepository: UserRepository) {
+class PostService(
+    val postRepository: PostRepository,
+    val userLikePostRepository: UserLikePostRepository,
+    val userRepository: UserRepository
+) {
 
     fun listAllByPage(page: Int, pageSize: Int) = this.postRepository.findAll(PageRequest.of(page, pageSize))
 
@@ -19,34 +25,32 @@ class PostService(val postRepository: PostRepository, val userRepository: UserRe
         return this.postRepository.save(post)
     }
 
-    fun updatePost(id: Long, description: String, image: String){
+    fun updatePost(id: Long, description: String, image: String) {
         val post = this.postRepository.findById(id)
-        if(post.isPresent){
+        if (post.isPresent) {
             this.postRepository.update(id, description, image)
         }
     }
 
-    //TODO
-    //Kako da znaeme oti userot go lajknal postot?
-    //nova tabela UsersPosts
-    //
-    fun likePost(id: Long){
+    fun likePost(id: Long) {
         val post = this.postRepository.findById(id)
-        if(post.isPresent){
+        if (post.isPresent) {
+//            val userLikePost = UserLikePost()
+//            userLikePostRepository.save()
             this.postRepository.like(id)
         }
     }
 
-    fun dislikePost(id: Long){
+    fun dislikePost(id: Long) {
         val post = this.postRepository.findById(id)
-        if(post.isPresent){
+        if (post.isPresent) {
             this.postRepository.dislike(id)
         }
     }
 
     fun deletePost(id: Long) {
         val post = this.postRepository.findById(id)
-        if(post.isPresent){
+        if (post.isPresent) {
             this.postRepository.delete(post.get())
         }
     }

@@ -1,11 +1,13 @@
 package com.sorsix.fitness.domain.entities
 
 import com.sorsix.fitness.domain.enum.Role
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
 @Table(name="users")
-data class User(
+data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -20,7 +22,7 @@ data class User(
     val email: String = "",
 
     @Column(nullable = false)
-    val password: String = "",
+    private val password: String = "",
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
@@ -30,4 +32,20 @@ data class User(
 
     val description: String = "",
 
-    )
+    ) : UserDetails {
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
+        return mutableListOf(role)
+    }
+
+    override fun getPassword(): String = password
+
+    override fun getUsername(): String = "$name $surname"
+
+    override fun isAccountNonExpired(): Boolean = true
+
+    override fun isAccountNonLocked(): Boolean = true
+
+    override fun isCredentialsNonExpired(): Boolean = true
+
+    override fun isEnabled(): Boolean = true
+}
