@@ -39,7 +39,7 @@ data class User (
 
     override fun getPassword(): String = password
 
-    override fun getUsername(): String = "$name $surname"
+    override fun getUsername(): String = "$name $surname" //da bide email?
 
     override fun isAccountNonExpired(): Boolean = true
 

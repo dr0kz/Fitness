@@ -11,5 +11,4 @@ class DayService(val dayRepository: DayRepository) {
     fun findAllByWorkoutProgramId(id: Long): Map<Int,List<Day>> =
         this.dayRepository.findAllByWorkoutProgramId(id).groupBy { it.week }
 
-
 }

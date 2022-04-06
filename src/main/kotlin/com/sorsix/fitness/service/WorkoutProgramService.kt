@@ -1,5 +1,8 @@
 package com.sorsix.fitness.service
 
+
+import com.sorsix.fitness.domain.entities.WorkoutProgram
+
 import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.Response
 import com.sorsix.fitness.api.dto.Success
@@ -12,6 +15,7 @@ import com.sorsix.fitness.domain.enum.DayOfWeek
 import com.sorsix.fitness.repository.BoughtProgramRepository
 import com.sorsix.fitness.repository.DayRepository
 import com.sorsix.fitness.repository.UserRepository
+
 import com.sorsix.fitness.repository.WorkoutProgramRepository
 import org.springframework.stereotype.Service
 import kotlin.math.ceil

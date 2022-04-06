@@ -1,5 +1,3 @@
-package com.sorsix.fitness.api.controller;
-
 import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
@@ -52,4 +50,5 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
     @PostMapping("/buy/{workoutProgramId}")
     fun buy(@PathVariable workoutProgramId: Long) =
         this.workoutProgramService.buy(workoutProgramId)
+}
 }
