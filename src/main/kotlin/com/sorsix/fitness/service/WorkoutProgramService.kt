@@ -10,7 +10,6 @@ import com.sorsix.fitness.api.dto.workout_program.DayRequest
 import com.sorsix.fitness.domain.entities.BoughtProgram
 import com.sorsix.fitness.domain.entities.Day
 import com.sorsix.fitness.domain.entities.User
-import com.sorsix.fitness.domain.entities.WorkoutProgram
 import com.sorsix.fitness.domain.enum.DayOfWeek
 import com.sorsix.fitness.repository.BoughtProgramRepository
 import com.sorsix.fitness.repository.DayRepository

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/workout-program")
 class WorkoutProgramController(val workoutProgramService: WorkoutProgramService) {
 
-
     @GetMapping("/list/{trainerId}")
     fun findAllByTrainer(@PathVariable trainerId: Long) =
         this.workoutProgramService.findAllWorkoutProgramsByTrainerId(trainerId)
@@ -50,5 +49,4 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
     @PostMapping("/buy/{workoutProgramId}")
     fun buy(@PathVariable workoutProgramId: Long) =
         this.workoutProgramService.buy(workoutProgramId)
-}
 }
