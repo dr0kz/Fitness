@@ -32,6 +32,13 @@ data class User (
 
     val description: String = "",
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @CollectionTable(
+//        name="user_roles",
+//        joinColumns = [JoinColumn(name = "user_id")],
+//    )
+//    private var roles : Set<UserRole>  = HashSet<>()
+
     ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
         return mutableListOf(role)
@@ -39,7 +46,8 @@ data class User (
 
     override fun getPassword(): String = password
 
-    override fun getUsername(): String = "$name $surname" //da bide email?
+    //override fun getUsername(): String = "$name $surname" //da bide email?
+    override fun getUsername(): String = email
 
     override fun isAccountNonExpired(): Boolean = true
 

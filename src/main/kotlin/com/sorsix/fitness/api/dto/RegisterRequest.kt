@@ -9,4 +9,5 @@ data class RegisterRequest(
     val role: Role,
     val password: String,
     val confirmPassword: String,
+    val username: String = email
 )
