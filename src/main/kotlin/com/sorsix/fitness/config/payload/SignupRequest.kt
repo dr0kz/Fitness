@@ -1,11 +1,13 @@
 package com.sorsix.fitness.config.payload
 
+import com.sorsix.fitness.domain.enum.Role
+
 data class SignupRequest(
-    var email: String? = null, //username
+    val email: String? = null, //username
 
-    var role: Set<String>? = null,
+    val role: Role? = null,
 
-    var password: String? = null
-) {
-    var username = email
-}
+    val password: String? = null,
+
+    val confirmPassword: String? = null
+)

@@ -1,4 +1,4 @@
-package com.sorsix.fitness.config
+package com.sorsix.fitness.config.com.sorsix.fitness.config
 
 //import com.fitness.springjwt.security.jwt.AuthEntryPointJwt;
 //import com.fitness.springjwt.security.jwt.AuthTokenFilter;
@@ -14,7 +14,10 @@ package com.sorsix.fitness.config
 //
 //}
 
-import org.springframework.beans.factory.annotation.Autowired
+import com.sorsix.fitness.config.AuthEntryPointJwt
+import com.sorsix.fitness.config.AuthTokenFilter
+import com.sorsix.fitness.config.PasswordEncoder
+import com.sorsix.fitness.config.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager

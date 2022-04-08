@@ -1,26 +1,23 @@
 package com.sorsix.fitness.api.controller
 
+import com.sorsix.fitness.api.dto.RegisterRequest
 import com.sorsix.fitness.config.JwtUtils
 import com.sorsix.fitness.config.PasswordEncoder
 import com.sorsix.fitness.config.UserDetailsImpl
 import com.sorsix.fitness.config.payload.JwtResponse
 import com.sorsix.fitness.config.payload.LoginRequest
 import com.sorsix.fitness.config.payload.MessageResponse
-import com.sorsix.fitness.config.payload.SignupRequest
-import com.sorsix.fitness.domain.entities.Role
 import com.sorsix.fitness.domain.entities.User
-import com.sorsix.fitness.repository.RoleRepository
 import com.sorsix.fitness.repository.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
-import java.util.function.Consumer
 import java.util.stream.Collectors
+import javax.validation.Valid
 
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
@@ -29,7 +26,6 @@ import java.util.stream.Collectors
 class AuthController(
     val authenticationManager: AuthenticationManager,
     val userRepository: UserRepository,
-    val roleRepository: RoleRepository,
     val encoder: PasswordEncoder,
     val jwtUtils: JwtUtils
 ) {
@@ -56,70 +52,61 @@ class AuthController(
     }
 
     @PostMapping("/signup")
-    fun registerUser(@RequestBody signUpRequest: SignupRequest): ResponseEntity<*> {
+    fun registerUser(@Valid @RequestBody signUpRequest: RegisterRequest): ResponseEntity<*> {
+
+        if(signUpRequest.name==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: Name field is empty!"))
+        }
+        if(signUpRequest.surname==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: surname field is empty!"))
+        }
+        if(signUpRequest.email==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: email field is empty!"))
+        }
+        if(signUpRequest.role==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: role field is empty!"))
+        }
+        if(signUpRequest.password==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: password field is empty!"))
+        }
+        if(signUpRequest.confirmPassword==null){
+            return ResponseEntity
+                .badRequest()
+                .body(MessageResponse("Error: confirmPassword field is empty!"))
+        }
         if (signUpRequest.email?.let { userRepository.existsByEmail(it) } == true) {
             return ResponseEntity
                 .badRequest()
-                .body(MessageResponse("Error: Username is already taken!"))
+                .body(MessageResponse("Error: Email is already taken!"))
         }
-        if (userRepository!!.existsByEmail(signUpRequest.email!!)!!) {
+        if(signUpRequest.password != signUpRequest.confirmPassword){
             return ResponseEntity
                 .badRequest()
-                .body(MessageResponse("Error: Email is already in use!"))
+                .body(MessageResponse("Passwords do not match"))
         }
 
         // Create new user's account
-        val user = signUpRequest.username?.let {
-            User(0L,
-                name="d",
-                surname="x",
-
-                it,
-                signUpRequest.email!!,
-                encoder.passwordEncoderBean().encode(signUpRequest.password)
+        val user = User(
+                0L,
+                name = signUpRequest.name!!,
+                surname = signUpRequest.surname!!,
+                email = signUpRequest.email!!,
+                password = encoder.passwordEncoderBean().encode(signUpRequest.password),
+                role = signUpRequest.role,
             )
-        }
-        val strRoles = signUpRequest.role
-        val roles: MutableSet<Role> = HashSet<Role>()
-        if (strRoles == null) {
-            val userRole: Role = roleRepository!!.findByName(ERole.ROLE_USER)
-                .orElseThrow { RuntimeException("Error: Role is not found.") }
-            roles.add(userRole)
-        } else {
-            strRoles.forEach(Consumer { role: String? ->
-                when (role) {
-                    "admin" -> {
-                        val adminRole: Role = roleRepository!!.findByName(ERole.ROLE_ADMIN)
-                            .orElseThrow {
-                                RuntimeException(
-                                    "Error: Role is not found."
-                                )
-                            }
-                        roles.add(adminRole)
-                    }
-                    "mod" -> {
-                        val modRole: Role = roleRepository!!.findByName(ERole.ROLE_MODERATOR)
-                            .orElseThrow {
-                                RuntimeException(
-                                    "Error: Role is not found."
-                                )
-                            }
-                        roles.add(modRole)
-                    }
-                    else -> {
-                        val userRole: Role = roleRepository!!.findByName(ERole.ROLE_USER)
-                            .orElseThrow {
-                                RuntimeException(
-                                    "Error: Role is not found."
-                                )
-                            }
-                        roles.add(userRole)
-                    }
-                }
-            })
-        }
-        user.setRoles(roles)
-        userRepository!!.save<User>(user)
+
+        userRepository.save<User>(user)
+
         return ResponseEntity.ok(MessageResponse("User registered successfully!"))
     }
 }

@@ -16,21 +16,16 @@ class TestController {
         return "Public Content."
     }
 
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @GetMapping("/trainee")
+    @PreAuthorize("hasRole('TRAINEE')")
     fun userAccess(): String {
-        return "User Content."
+        return "User TRAINEE."
     }
 
-    @GetMapping("/mod")
-    @PreAuthorize("hasRole('MODERATOR')")
+    @GetMapping("/trainer")
+    @PreAuthorize("hasRole('TRAINER')")
     fun moderatorAccess(): String {
-        return "Moderator Board."
+        return "User TRAINER."
     }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    fun adminAccess(): String {
-        return "Admin Board."
-    }
 }

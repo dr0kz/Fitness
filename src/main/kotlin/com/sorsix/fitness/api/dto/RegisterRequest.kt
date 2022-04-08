@@ -1,13 +1,31 @@
 package com.sorsix.fitness.api.dto
 
 import com.sorsix.fitness.domain.enum.Role
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 
 data class RegisterRequest(
-    val email: String,
-    val name: String,
-    val surname: String,
-    val role: Role,
-    val password: String,
-    val confirmPassword: String,
-    val username: String = email
+
+    @field:NotNull
+    @field:NotEmpty
+    val email: String?,
+
+    @field:NotNull
+    @field:NotEmpty
+    val name: String?,
+
+    @field:NotNull
+    @field:NotEmpty
+    val surname: String?,
+
+    @field:NotNull
+    val role: Role?,
+
+    @field:NotNull
+    @field:NotEmpty
+    val password: String?,
+
+    @field:NotNull
+    @field:NotEmpty
+    val confirmPassword: String?,
 )

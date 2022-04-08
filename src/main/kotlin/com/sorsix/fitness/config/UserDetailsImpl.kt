@@ -50,15 +50,13 @@ class UserDetailsImpl(
     companion object {
         private const val serialVersionUID = 1L
         fun build(user: User): UserDetailsImpl {
-//            val authorities: List<GrantedAuthority> = user.getRoles().stream() //edna role ke e neli?
-//                .map { role -> SimpleGrantedAuthority(role.getName().name()) }
-//                .collect(Collectors.toList())
+
             val authorities : List<GrantedAuthority> = listOf(user.role)
             return UserDetailsImpl(
                 user.id,
-                user.getUsername(),
+                user.username,
                 user.email,
-                user.getPassword(),
+                user.password,
                 authorities
             )
         }
