@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface DayRepository : JpaRepository<Day,Long> {
-
+    fun findAllByWorkoutProgramId(id: Long): List<Day>
 }
