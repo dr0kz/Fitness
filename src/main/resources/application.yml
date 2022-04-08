@@ -1,9 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5500/Fitness
+    url: jdbc:postgresql://localhost:5432/Fitness
     username: postgres
-    password: 1q2w3e4r5t
+    password: root
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+fitness:
+  app:
+    jwtSecret: bezKoderSecretKey
+    jwtExpirationMs: 86400000
+

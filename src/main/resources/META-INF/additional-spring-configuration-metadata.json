@@ -9,5 +9,15 @@
       "name": "spring.jpa.hibernate",
       "type": "java.lang.String",
       "description": "Description for spring.jpa.hibernate."
+    },
+    {
+      "name": "fitness.app.jwtSecret",
+      "type": "java.lang.String",
+      "description": "Description for fitness.app.jwtSecret."
+    },
+    {
+      "name": "fitness.app.jwtExpirationMs",
+      "type": "java.lang.String",
+      "description": "Description for fitness.app.jwtExpirationMs."
     }
   ] }
