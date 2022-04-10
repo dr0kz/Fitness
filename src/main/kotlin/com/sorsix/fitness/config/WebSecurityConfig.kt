@@ -48,7 +48,8 @@ class WebSecurityConfig(
 
     @Throws(Exception::class)
     public override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder.passwordEncoderBean())
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder.passwordEncoderBean())
     }
 
     @Bean

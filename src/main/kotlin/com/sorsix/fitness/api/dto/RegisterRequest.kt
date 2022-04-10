@@ -8,24 +8,24 @@ data class RegisterRequest(
 
     @field:NotNull
     @field:NotEmpty
-    val email: String?,
+    val email: String,
 
     @field:NotNull
     @field:NotEmpty
-    val name: String?,
+    val name: String,
 
     @field:NotNull
     @field:NotEmpty
-    val surname: String?,
+    val surname: String,
 
     @field:NotNull
-    val role: Role?,
-
-    @field:NotNull
-    @field:NotEmpty
-    val password: String?,
+    val role: Role,
 
     @field:NotNull
     @field:NotEmpty
-    val confirmPassword: String?,
+    val password: String,
+
+    @field:NotNull
+    @field:NotEmpty
+    val confirmPassword: String,
 )

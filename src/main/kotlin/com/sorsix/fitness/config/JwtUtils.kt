@@ -1,5 +1,6 @@
 package com.sorsix.fitness.config
 
+import com.sorsix.fitness.domain.entities.User
 import io.jsonwebtoken.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +17,7 @@ class JwtUtils {
     private val jwtExpirationMs = 86400000
 
     fun generateJwtToken(authentication: Authentication): String {
-        val userPrincipal = authentication.principal as UserDetailsImpl
+        val userPrincipal = authentication.principal as User
         return Jwts.builder()
             .setSubject(userPrincipal.username)
             .setIssuedAt(Date())

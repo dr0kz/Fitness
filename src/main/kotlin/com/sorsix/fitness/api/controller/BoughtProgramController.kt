@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/bought-programs")
 class BoughtProgramController(val boughtProgramService : BoughtProgramService) {
 
-    @GetMapping("/list/{userId}")
-    fun listAllByUserId(@PathVariable userId: Long) = this
+    @GetMapping("/list")
+    fun listAllByUser() =
+        //get user
+        this.boughtProgramService.listAllByUser()
 }

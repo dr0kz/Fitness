@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name="users")
-data class User (
+class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -32,12 +32,6 @@ data class User (
 
     val description: String = "",
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @CollectionTable(
-//        name="user_roles",
-//        joinColumns = [JoinColumn(name = "user_id")],
-//    )
-//    private var roles : Set<UserRole>  = HashSet<>()
 
     ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
@@ -56,4 +50,27 @@ data class User (
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun isEnabled(): Boolean = true
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val user = other as User
+        return id == user.id
+    }
+
+    companion object {
+        private const val serialVersionUID = 1L
+        fun build(user: User): User {
+
+            val authorities : List<GrantedAuthority> = listOf(user.role)
+            return User(
+                user.id,
+                user.name,
+                user.surname,
+                user.email,
+                user.password,
+                user.role,
+            )
+        }
+    }
 }
