@@ -19,7 +19,7 @@ data class RegisterRequest(
     val surname: String,
 
     @field:NotNull
-    val role: Role,
+    val role: String,
 
     @field:NotNull
     @field:NotEmpty
