@@ -32,6 +32,9 @@ class User (
 
     val description: String = "",
 
+    val followersNum: Int = 0,
+
+    val followingNum: Int = 0
 
     ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {

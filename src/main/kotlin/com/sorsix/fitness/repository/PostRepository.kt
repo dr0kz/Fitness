@@ -30,4 +30,5 @@ interface PostRepository : JpaRepository<Post,Long> {
     @Transactional
     @Query("update Post p set p.muscles = p.muscles-1 where p.id = :id")
     fun dislike(id: Long)
+
 }
