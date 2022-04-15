@@ -1,11 +1,13 @@
 package com.sorsix.fitness.service
 
 import com.sorsix.fitness.domain.entities.Post
+import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.domain.entities.UserLikePost
 import com.sorsix.fitness.repository.PostRepository
 import com.sorsix.fitness.repository.UserLikePostRepository
 import com.sorsix.fitness.repository.UserRepository
 import org.springframework.data.domain.PageRequest
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,8 +21,8 @@ class PostService(
 
     fun findAllByUserId(id: Long) = this.postRepository.findAllByUserId(id)
 
-    fun createPost(description: String, image: String, userId: Long): Post {
-        val user = this.userRepository.findById(userId).get()
+    fun createPost(description: String, image: String): Post {
+        val user = SecurityContextHolder.getContext().authentication.principal as User
         val post = Post(description = description, image = image, user = user)
         return this.postRepository.save(post)
     }

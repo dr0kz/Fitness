@@ -15,9 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
-import java.util.stream.Collectors
 import javax.validation.Valid
 
 
@@ -44,9 +42,11 @@ class AuthController(
             JwtResponse(
                 jwt,
                 userDetails.id,
-                userDetails.username,
                 userDetails.email,
-                roles
+                userDetails.name,
+                userDetails.surname,
+                userDetails.description,
+                roles,
             )
         )
     }
