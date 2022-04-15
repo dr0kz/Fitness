@@ -9,6 +9,7 @@ import com.sorsix.fitness.config.payload.MessageResponse
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.domain.enum.Role
 import com.sorsix.fitness.repository.UserRepository
+import com.sorsix.fitness.service.UserFollowUserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -28,7 +29,8 @@ class AuthController(
     val authenticationManager: AuthenticationManager,
     val userRepository: UserRepository,
     val encoder: PasswordEncoder,
-    val jwtUtils: JwtUtils
+    val jwtUtils: JwtUtils,
+    val userFollowUserService: UserFollowUserService
 ) {
     @PostMapping("/login")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): ResponseEntity<*> {
@@ -79,4 +81,9 @@ class AuthController(
 
         return ResponseEntity.ok(MessageResponse("User registered successfully!"))
     }
+
+    @PutMapping("/follow")
+    fun followUser(@RequestParam userFollowingId: Long,
+                   @RequestParam userFollowerId: Long) =
+        userFollowUserService.followUser(userFollowingId,userFollowerId)
 }
