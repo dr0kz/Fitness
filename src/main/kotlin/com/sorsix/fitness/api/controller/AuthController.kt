@@ -9,7 +9,6 @@ import com.sorsix.fitness.config.payload.MessageResponse
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.domain.enum.Role
 import com.sorsix.fitness.repository.UserRepository
-import com.sorsix.fitness.service.UserFollowUserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -19,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
-
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -27,9 +25,8 @@ class AuthController(
     val authenticationManager: AuthenticationManager,
     val userRepository: UserRepository,
     val encoder: PasswordEncoder,
-    val jwtUtils: JwtUtils,
-    val userFollowUserService: UserFollowUserService
-) {
+    val jwtUtils: JwtUtils) {
+
     @PostMapping("/login")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): ResponseEntity<*> {
         val authentication: Authentication = authenticationManager.authenticate(
@@ -81,9 +78,4 @@ class AuthController(
 
         return ResponseEntity.ok(MessageResponse("User registered successfully!"))
     }
-
-    @PutMapping("/follow")
-    fun followUser(@RequestParam userFollowingId: Long,
-                   @RequestParam userFollowerId: Long) =
-        userFollowUserService.followUser(userFollowingId,userFollowerId)
 }
