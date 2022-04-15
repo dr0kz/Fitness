@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,11 +31,11 @@ class PostController(val postService: PostService,
         this.postService.findAllByUserId(id)
 
     @PostMapping("/add")
-    fun createPost(@RequestBody postRequest: PostCreateRequest): ResponseEntity<Post> =
-        with(postRequest) {
-            val post = postService.createPost(description, image, userId)
-            ResponseEntity.ok(post)
-        }
+    fun createPost(@RequestParam description: String, @RequestParam image: MultipartFile): ResponseEntity<Post>{
+        val post = postService.createPost(description, image)
+        return ResponseEntity.ok(post)
+    }
+
 
     @DeleteMapping("/delete/{id}")
     fun deletePost(@PathVariable id: Long) = this.postService.deletePost(id)
