@@ -28,7 +28,9 @@ class User (
     @Column(nullable = false)
     val role: Role = Role.TRAINEE,
 
-    val image: String = "",
+    @Lob
+    @Column(nullable = false)
+    val image: ByteArray = ByteArray(1),
 
     val description: String = "",
 

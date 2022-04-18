@@ -7,6 +7,7 @@ import com.sorsix.fitness.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,7 +34,7 @@ class UserController(val userService: UserService) {
 
 
     @PutMapping("/edit-profile/{id}")
-    fun editProfile(@PathVariable id: Long, @RequestBody editReq: EditProfileRequest) =
+    fun editProfile(@PathVariable id: Long, @RequestBody editReq: EditProfileRequest, @RequestParam image: MultipartFile) =
         with(editReq) {
             userService.updateProfile(id, email, name, surname, password, confirmPassword, description)
         }

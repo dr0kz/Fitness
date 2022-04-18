@@ -7,5 +7,4 @@ data class EditProfileRequest(
     val password: String?,
     val confirmPassword: String?,
     val description: String?
-    //image?
 )
