@@ -1,10 +1,9 @@
 package com.sorsix.fitness.api.controller
 
-import com.sorsix.fitness.api.dto.PostCreateRequest
 import com.sorsix.fitness.api.dto.PostUpdateRequest
 import com.sorsix.fitness.domain.entities.Post
 import com.sorsix.fitness.service.PostService
-import com.sorsix.fitness.service.UserLikePostService
+import com.sorsix.fitness.service.UserService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -23,7 +22,7 @@ import java.time.LocalDateTime
 @RequestMapping("/api/posts")
 class PostController(
     val postService: PostService,
-    val userLikePostService: UserLikePostService
+    val userService: UserService,
 ) {
 
     @GetMapping
@@ -34,9 +33,11 @@ class PostController(
     ): List<Post> =
         this.postService.listAllByPage(page, pageSize, firstGetRequestDateTime)
 
-    @GetMapping("/{id}")
-    fun findAllByUserId(@PathVariable id: Long): List<Post> =
-        this.postService.findAllByUserId(id)
+    @GetMapping("/find-all-by-user")
+    fun findAllByUser(): List<Post>{
+        val t = this.postService.findAllByUser()
+        return t;
+    }
 
     @PostMapping("/add")
     fun createPost(@RequestParam description: String, @RequestParam image: MultipartFile): ResponseEntity<Post> {
@@ -60,5 +61,5 @@ class PostController(
     fun dislikePost(@PathVariable id: Long) = postService.dislikePost(id)
 
     @PutMapping("/likeOrDislike/{postId}")
-    fun musclePost(@PathVariable postId: Long) = userLikePostService.musclePost(postId)
+    fun musclePost(@PathVariable postId: Long) = userService.musclePost(postId)
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
+import javax.transaction.Transactional
 
 
 @Service
@@ -28,7 +29,10 @@ class PostService(
             .toList();
     }
 
-    fun findAllByUserId(id: Long) = this.postRepository.findAllByUserId(id)
+    fun findAllByUser(): List<Post> {
+        val user = SecurityContextHolder.getContext().authentication.principal as User
+        return this.postRepository.findAllByUserId(user.id)
+    }
 
     fun createPost(description: String, image: MultipartFile): Post {
         val user = SecurityContextHolder.getContext().authentication.principal as User

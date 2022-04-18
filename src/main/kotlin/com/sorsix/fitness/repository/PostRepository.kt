@@ -17,6 +17,7 @@ interface PostRepository : JpaRepository<Post,Long> {
     @Transactional
     fun findAllByDateCreatedBeforeOrderByDateCreatedDesc(pageable: Pageable, date: LocalDateTime): Page<Post>
 
+    @Transactional
     fun findAllByUserId(id: Long): List<Post>
 
     @Modifying

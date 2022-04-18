@@ -1,8 +1,10 @@
 package com.sorsix.fitness.api.controller
 
-import com.sorsix.fitness.api.dto.EditProfileRequest
+import com.sorsix.fitness.api.dto.*
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.service.UserService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -10,12 +12,24 @@ import org.springframework.web.bind.annotation.*
 class UserController(val userService: UserService) {
 
     @PutMapping("/follow")
-    fun followUser(@RequestParam userFollowingId: Long, @RequestParam userFollowerId: Long) =
-        userService.followUser(userFollowingId,userFollowerId)
+    fun followUser(
+        @RequestParam userFollowingId: Long,
+        @RequestParam userFollowerId: Long
+    ): ResponseEntity<Response<*>> =
+        when (val result = userService.followUser(userFollowingId,userFollowerId)) {
+            is Success -> ResponseEntity.ok(Success(result.result))
+            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+            is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+        }
 
-    @PutMapping("/muscle")
-    fun musclePost(@RequestParam userId: Long, @RequestParam postId: Long) =
-        userService.musclePost(userId,postId)
+    @PutMapping("/muscle/{postId}")
+    fun musclePost(@PathVariable postId: Long) =
+        when (val result = userService.musclePost(postId)) {
+            is Success -> ResponseEntity.ok(Success(result.result))
+            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+            is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+        }
+
 
     @PutMapping("/edit-profile/{id}")
     fun editProfile(@PathVariable id: Long, @RequestBody editReq: EditProfileRequest) =
