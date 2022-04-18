@@ -10,6 +10,7 @@ import javax.transaction.Transactional
 
 @Repository
 interface UserRepository : JpaRepository<User,Long> {
+
     fun findByEmail(email: String): Optional<User>
     fun existsByEmail(email: String): Boolean?
 
@@ -32,5 +33,32 @@ interface UserRepository : JpaRepository<User,Long> {
     @Transactional
     @Query("update User u set u.followersNum = u.followersNum-1 where u.id = :userId")
     fun updateNumberOfFollowersMinus(userId: Long)
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.email = :email where u.id = :userId")
+    fun updateEmail(userId: Long, email: String)
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.name = :name where u.id = :userId")
+    fun updateName(userId: Long, name: String)
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.surname = :surname where u.id = :userId")
+    fun updateSurname(userId: Long, surname: String)
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.description = :description where u.id = :userId")
+    fun updateDescription(userId: Long, description: String)
+
+    @Modifying
+    @Transactional
+    @Query("update User u set u.password = :password where u.id = :userId")
+    fun updatePassword(userId: Long, password: String)
+
+    fun findAllByNameLikeOrSurnameLikeOrderByFollowersNum(name: String, surname: String): List<User>
 
 }

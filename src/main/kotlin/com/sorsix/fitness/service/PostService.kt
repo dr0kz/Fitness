@@ -51,8 +51,6 @@ class PostService(
     fun likePost(id: Long) {
         val post = this.postRepository.findById(id)
         if (post.isPresent) {
-//            val userLikePost = UserLikePost()
-//            userLikePostRepository.save()
             this.postRepository.like(id)
         }
     }
