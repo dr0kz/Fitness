@@ -80,7 +80,7 @@ class UserService(
                       password: String?, confirmPassword: String?, description: String?): Response<*> {
         val user = userRepository.findById(id)
         if(user.isPresent) {
-            if (email!=null && email.contains("@") && email.contains(".com")) {
+            if (email!=null && email.contains("@")) {
                 if (this.userRepository.findAll().stream().noneMatch { u -> u.id != id && u.email == email }) {
                     userRepository.updateEmail(id, email)
                 } else {
