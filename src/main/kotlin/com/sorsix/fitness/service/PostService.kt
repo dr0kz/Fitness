@@ -32,6 +32,9 @@ class PostService(
     fun findAllByUser(): List<Post> {
         val user = SecurityContextHolder.getContext().authentication.principal as User
         return this.postRepository.findAllByUserId(user.id)
+            .stream()
+            .map { t -> t.copy(likedBy = userLikePostRepository.existsByUserIdAndPostId(user.id, t.id)) }
+            .toList()
     }
 
     fun createPost(description: String, image: MultipartFile): Post {

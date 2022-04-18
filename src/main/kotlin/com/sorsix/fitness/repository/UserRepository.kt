@@ -1,5 +1,6 @@
 package com.sorsix.fitness.repository
 
+import com.sorsix.fitness.api.dto.projection.UserProjection
 import com.sorsix.fitness.domain.entities.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -8,11 +9,19 @@ import org.springframework.stereotype.Repository
 import java.util.*
 import javax.transaction.Transactional
 
+
 @Repository
-interface UserRepository : JpaRepository<User,Long> {
+interface UserRepository : JpaRepository<User, Long> {
 
     fun findByEmail(email: String): Optional<User>
+
     fun existsByEmail(email: String): Boolean?
+
+    @Query(
+        "select u.id as id, u.name as name, u.surname as surname, u.image as image from User u" +
+                " where concat(lower(u.name),lower(u.surname)) like :searchText"
+    )
+    fun findAllBySearchText(searchText: String): List<UserProjection>
 
     @Modifying
     @Transactional
@@ -59,6 +68,5 @@ interface UserRepository : JpaRepository<User,Long> {
     @Query("update User u set u.password = :password where u.id = :userId")
     fun updatePassword(userId: Long, password: String)
 
-    fun findAllByNameLikeOrSurnameLikeOrderByFollowersNum(name: String, surname: String): List<User>
 
 }

@@ -4,6 +4,7 @@ import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
 import com.sorsix.fitness.api.dto.Success
+import com.sorsix.fitness.api.dto.projection.UserProjection
 import com.sorsix.fitness.config.PasswordEncoder
 import com.sorsix.fitness.domain.entities.Post
 import com.sorsix.fitness.domain.entities.User
@@ -26,26 +27,27 @@ class UserService(
     val userLikePostRepository: UserLikePostRepository,
     val postRepository: PostRepository,
     val postService: PostService,
-    val encoder: PasswordEncoder) {
+    val encoder: PasswordEncoder
+) {
 
     @Transactional
     fun followUser(followingId: Long, followerId: Long): Response<*> {
-        val userFollowing:User = SecurityContextHolder.getContext().authentication.principal as User
+        val userFollowing: User = SecurityContextHolder.getContext().authentication.principal as User
         val userFollower: Optional<User> = userRepository.findById(followerId)
 
-        if(userFollower.isEmpty){
+        if (userFollower.isEmpty) {
             return NotFound("User with id $followerId was not found")
         }
 
-        return if(userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(followingId,followerId)){
-            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(followerId,followingId)
+        return if (userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(followingId, followerId)) {
+            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(followerId, followingId)
             userRepository.updateNumberOfFollowersMinus(followerId)
             userRepository.updateNumberOfFollowingMinus(followingId)
             userRepository.save(userFollower.get())
             userRepository.save(userFollowing)
             Success("Ok")
         } else {
-            userFollowUserRepository.save(UserFollowUser(0L,userFollowing,userFollower.get()))
+            userFollowUserRepository.save(UserFollowUser(0L, userFollowing, userFollower.get()))
             userRepository.updateNumberOfFollowersPlus(followerId)
             userRepository.updateNumberOfFollowingPlus(followingId)
             userRepository.save(userFollower.get())
@@ -64,7 +66,7 @@ class UserService(
             return NotFound("Post with id $postId was not found")
         }
 
-        return if(userLikePostRepository.existsByUserIdAndPostId(user.id, postId)) {
+        return if (userLikePostRepository.existsByUserIdAndPostId(user.id, postId)) {
             postRepository.dislike(postId)
             userLikePostRepository.deleteUserLikePostByUserIdAndPostId(user.id, postId)
             Success("Post disliked successfully")
@@ -76,11 +78,13 @@ class UserService(
     }
 
     @Transactional
-    fun updateProfile(id: Long, email: String?, name: String?, surname: String?,
-                      password: String?, confirmPassword: String?, description: String?): Response<*> {
+    fun updateProfile(
+        id: Long, email: String?, name: String?, surname: String?,
+        password: String?, confirmPassword: String?, description: String?
+    ): Response<*> {
         val user = userRepository.findById(id)
-        if(user.isPresent) {
-            if (email!=null && email.contains("@")) {
+        if (user.isPresent) {
+            if (email != null && email.contains("@")) {
                 if (this.userRepository.findAll().stream().noneMatch { u -> u.id != id && u.email == email }) {
                     userRepository.updateEmail(id, email)
                 } else {
@@ -90,15 +94,15 @@ class UserService(
                 return BadRequest("Email $email not valid")
             }
 
-            if(name!=null) userRepository.updateName(id,name)
+            if (name != null) userRepository.updateName(id, name)
 
-            if(surname!=null) userRepository.updateSurname(id,surname)
+            if (surname != null) userRepository.updateSurname(id, surname)
 
-            if(description!=null) userRepository.updateDescription(id,description)
+            if (description != null) userRepository.updateDescription(id, description)
 
-            if(password != null && confirmPassword != null && password == confirmPassword) {
+            if (password != null && confirmPassword != null && password == confirmPassword) {
                 val newPassword = encoder.passwordEncoderBean().encode(password)
-                userRepository.updatePassword(id,newPassword)
+                userRepository.updatePassword(id, newPassword)
             }
 
             userRepository.save(user.get())
@@ -108,11 +112,9 @@ class UserService(
         }
     }
 
-    fun getSearchedUsers(search: String?): List<User> {
-        return if (search!=null)
-            userRepository.findAllByNameLikeOrSurnameLikeOrderByFollowersNum(search,search)
-        else
-            userRepository.findAll()
+    fun findAllBySearchText(searchText: String): List<UserProjection> {
+        val searchTextToLower = searchText.lowercase(Locale.getDefault()).replace(" ", "");
+        return userRepository.findAllBySearchText("%$searchTextToLower%")
     }
 
 }

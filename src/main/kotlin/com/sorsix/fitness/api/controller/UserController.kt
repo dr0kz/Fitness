@@ -1,6 +1,7 @@
 package com.sorsix.fitness.api.controller
 
 import com.sorsix.fitness.api.dto.*
+import com.sorsix.fitness.api.dto.projection.UserProjection
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.service.UserService
 import org.springframework.http.HttpStatus
@@ -16,7 +17,7 @@ class UserController(val userService: UserService) {
         @RequestParam userFollowingId: Long,
         @RequestParam userFollowerId: Long
     ): ResponseEntity<Response<*>> =
-        when (val result = userService.followUser(userFollowingId,userFollowerId)) {
+        when (val result = userService.followUser(userFollowingId, userFollowerId)) {
             is Success -> ResponseEntity.ok(Success(result.result))
             is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
@@ -37,8 +38,9 @@ class UserController(val userService: UserService) {
             userService.updateProfile(id, email, name, surname, password, confirmPassword, description)
         }
 
-    @GetMapping("/search")
-    fun searchUsers(@RequestParam search: String?): List<User> {
-        return userService.getSearchedUsers(search)
+
+    @GetMapping("/find-all-by-search-text")
+    fun findAllByNameAndSurname(@RequestParam searchText: String): List<UserProjection> {
+        return userService.findAllBySearchText(searchText)
     }
 }
