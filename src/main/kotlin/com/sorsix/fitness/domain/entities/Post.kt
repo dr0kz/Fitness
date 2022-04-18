@@ -23,31 +23,8 @@ data class Post(
     val image: ByteArray = ByteArray(1),
 
     @ManyToOne
-    val user: User = User()
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    val user: User = User(),
 
-        other as Post
-
-        if (id != other.id) return false
-        if (muscles != other.muscles) return false
-        if (dateCreated != other.dateCreated) return false
-        if (description != other.description) return false
-        if (!image.contentEquals(other.image)) return false
-        if (user != other.user) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + muscles
-        result = 31 * result + dateCreated.hashCode()
-        result = 31 * result + description.hashCode()
-        result = 31 * result + image.contentHashCode()
-        result = 31 * result + user.hashCode()
-        return result
-    }
-}
+    @Transient
+    val likedBy: Boolean = false,
+)

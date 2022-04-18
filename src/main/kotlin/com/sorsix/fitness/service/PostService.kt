@@ -10,9 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
+import java.time.LocalDateTime
 
 
 @Service
@@ -22,7 +20,13 @@ class PostService(
     val userRepository: UserRepository
 ) {
 
-    fun listAllByPage(page: Int, pageSize: Int) = this.postRepository.findAll(PageRequest.of(page, pageSize))
+    fun listAllByPage(page: Int, pageSize: Int, date: LocalDateTime): List<Post> {
+        val user = SecurityContextHolder.getContext().authentication.principal as User
+        return postRepository.findAllByDateCreatedBeforeOrderByDateCreatedDesc(PageRequest.of(page, pageSize), date)
+            .stream()
+            .map { t -> t.copy(likedBy = userLikePostRepository.existsByUserIdAndPostId(user.id, t.id)) }
+            .toList();
+    }
 
     fun findAllByUserId(id: Long) = this.postRepository.findAllByUserId(id)
 

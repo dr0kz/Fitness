@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @Repository
 interface PostRepository : JpaRepository<Post,Long> {
 
-    override fun findAll(pageable: Pageable): Page<Post>
+
+    @Transactional
+    fun findAllByDateCreatedBeforeOrderByDateCreatedDesc(pageable: Pageable, date: LocalDateTime): Page<Post>
 
     fun findAllByUserId(id: Long): List<Post>
 
