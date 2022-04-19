@@ -34,9 +34,13 @@ class PostController(
         this.postService.listAllByPage(page, pageSize, firstGetRequestDateTime)
 
     @GetMapping("/find-all-by-user")
-    fun findAllByUser(): List<Post>{
-        val t = this.postService.findAllByUser()
-        return t;
+    fun findAllByUser(): List<Post> {
+        return this.postService.findAllByUser()
+    }
+
+    @GetMapping("/find-all-by-user/{id}")
+    fun findAllByUserId(@PathVariable id: Long): List<Post> {
+        return this.postService.findAllByUserId(id)
     }
 
     @PostMapping("/add")
