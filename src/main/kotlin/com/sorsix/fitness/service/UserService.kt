@@ -81,9 +81,12 @@ class UserService(
     }
 
     @Transactional
-    fun updateProfile(email: String?, name: String?, surname: String?,
-        password: String?, confirmPassword: String?, description: String?, image: MultipartFile?): Response<*> {
+    fun updateProfile(
+        email: String?, name: String?, surname: String?,
+        password: String?, confirmPassword: String?, description: String?, image: MultipartFile?
+    ): Response<*> {
         val user: User = SecurityContextHolder.getContext().authentication.principal as User
+
         if (email != null && email != "") {
             if (this.userRepository.findAll().stream().noneMatch { u -> u.id != user.id && u.email == email }) {
                 userRepository.updateEmail(user.id, email)
@@ -92,28 +95,52 @@ class UserService(
             }
         }
         if (name != null && name != "") {
-            println("TREE")
             userRepository.updateName(user.id, name)
         }
-        if (surname != null && surname != "") userRepository.updateSurname(user.id, surname)
-        if (description != null && description != "") userRepository.updateDescription(user.id, description)
+        if (surname != null && surname != "") {
+            userRepository.updateSurname(user.id, surname)
+        }
+        if (description != null && description != "") {
+            userRepository.updateDescription(user.id, description)
+        }
         if (password != null && password != "" && confirmPassword != null && confirmPassword != "") {
             if (password == confirmPassword) {
                 val newPassword = encoder.passwordEncoderBean().encode(password)
                 userRepository.updatePassword(user.id, newPassword)
-            }
-            else {
+            } else {
                 return BadRequest("Passwords not matching")
             }
         }
 
-        if(image!=null) {
-            val byteArr: ByteArray = image.bytes
+        val newImage = if (image != null) {
+            val byteArr = image.bytes
             ByteArrayInputStream(byteArr)
-            userRepository.updateImage(user.id, byteArr)
+            userRepository.updateImage(user.id, byteArr!!)
+            byteArr
+        } else {
+            user.image
         }
 
-        return Success(user)
+        val newPassword = if (password != null) {
+            encoder.passwordEncoderBean().encode(password)
+        } else {
+            user.password
+        }
+
+        val temp = user.copy(
+            id = user.id,
+            name = name ?: user.name,
+            surname = surname ?: user.surname,
+            email = email ?: user.email,
+            password = newPassword,
+            role = user.role,
+            image = newImage,
+            description = description ?: user.description,
+            followersNum = user.followersNum,
+            followingNum = user.followingNum
+        )
+
+        return Success(temp)
     }
 
     fun findAllBySearchText(searchText: String): List<UserProjection> {
