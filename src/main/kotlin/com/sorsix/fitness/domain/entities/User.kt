@@ -35,7 +35,10 @@ class User (
 
     val followersNum: Int = 0,
 
-    val followingNum: Int = 0
+    val followingNum: Int = 0,
+
+    @Transient
+    val followedBy: Boolean = false,
 
     ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {

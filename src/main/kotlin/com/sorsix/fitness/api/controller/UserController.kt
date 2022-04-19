@@ -14,11 +14,8 @@ import org.springframework.web.multipart.MultipartFile
 class UserController(val userService: UserService) {
 
     @PutMapping("/follow")
-    fun followUser(
-        @RequestParam userFollowingId: Long,
-        @RequestParam userFollowerId: Long
-    ): ResponseEntity<Response<*>> =
-        when (val result = userService.followUser(userFollowingId, userFollowerId)) {
+    fun followUnfollowUser(@RequestParam userFollowerId: Long): ResponseEntity<Response<*>> =
+        when (val result = userService.followUnfollowUser(userFollowerId)) {
             is Success -> ResponseEntity.ok(Success(result.result))
             is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
@@ -47,6 +44,11 @@ class UserController(val userService: UserService) {
     @GetMapping("/find-all-by-search-text")
     fun findAllByNameAndSurname(@RequestParam searchText: String): List<UserProjection> {
         return userService.findAllBySearchText(searchText)
+    }
+
+    @GetMapping("/{id}")
+    fun findById(@PathVariable id: Long): User? {
+        return userService.findUserById(id)
     }
 
 }

@@ -34,7 +34,7 @@ class UserService(
 ) {
 
     @Transactional
-    fun followUser(followingId: Long, followerId: Long): Response<*> {
+    fun followUnfollowUser(followerId: Long): Response<*> {
         val userFollowing: User = SecurityContextHolder.getContext().authentication.principal as User
         val userFollower: Optional<User> = userRepository.findById(followerId)
 
@@ -42,17 +42,17 @@ class UserService(
             return NotFound("User with id $followerId was not found")
         }
 
-        return if (userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(followingId, followerId)) {
-            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(followerId, followingId)
+        return if (userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(userFollowing.id, followerId)) {
+            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(followerId, userFollowing.id)
             userRepository.updateNumberOfFollowersMinus(followerId)
-            userRepository.updateNumberOfFollowingMinus(followingId)
+            userRepository.updateNumberOfFollowingMinus(userFollowing.id)
             userRepository.save(userFollower.get())
             userRepository.save(userFollowing)
             Success("Ok")
         } else {
             userFollowUserRepository.save(UserFollowUser(0L, userFollowing, userFollower.get()))
             userRepository.updateNumberOfFollowersPlus(followerId)
-            userRepository.updateNumberOfFollowingPlus(followingId)
+            userRepository.updateNumberOfFollowingPlus(userFollowing.id)
             userRepository.save(userFollower.get())
             userRepository.save(userFollowing)
             Success("Ok")
@@ -119,6 +119,15 @@ class UserService(
     fun findAllBySearchText(searchText: String): List<UserProjection> {
         val searchTextToLower = searchText.lowercase(Locale.getDefault()).replace(" ", "")
         return userRepository.findAllBySearchText("%$searchTextToLower%")
+    }
+
+    fun findUserById(id: Long): User? {
+        val user = userRepository.findById(id)
+        return if (user.isPresent) {
+            user.get()
+        } else {
+            null
+        }
     }
 
 }
