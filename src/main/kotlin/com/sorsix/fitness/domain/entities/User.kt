@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-@Table(name="users")
-class User (
+@Table(name = "users")
+data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -40,7 +40,7 @@ class User (
     @Transient
     val followedBy: Boolean = false,
 
-    ) : UserDetails {
+) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
         return mutableListOf(role)
     }
@@ -65,11 +65,25 @@ class User (
         return id == user.id
     }
 
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + surname.hashCode()
+        result = 31 * result + email.hashCode()
+        result = 31 * result + password.hashCode()
+        result = 31 * result + role.hashCode()
+        result = 31 * result + (image?.contentHashCode() ?: 0)
+        result = 31 * result + description.hashCode()
+        result = 31 * result + followersNum
+        result = 31 * result + followingNum
+        return result
+    }
+
     companion object {
         private const val serialVersionUID = 1L
         fun build(user: User): User {
 
-            val authorities : List<GrantedAuthority> = listOf(user.role)
+            val authorities: List<GrantedAuthority> = listOf(user.role)
             return User(
                 user.id,
                 user.name,
@@ -77,6 +91,10 @@ class User (
                 user.email,
                 user.password,
                 user.role,
+                user.image,
+                user.description,
+                user.followersNum,
+                user.followingNum,
             )
         }
     }
