@@ -32,16 +32,21 @@ class UserController(val userService: UserService) {
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
         }
 
-
-    @PutMapping("/edit-profile/{id}")
-    fun editProfile(@PathVariable id: Long, @RequestBody editReq: EditProfileRequest, @RequestParam image: MultipartFile) =
-        with(editReq) {
-            userService.updateProfile(id, email, name, surname, password, confirmPassword, description)
-        }
-
+    @PutMapping("/edit-profile")
+    fun editProfile(@RequestParam email: String?,
+                    @RequestParam name: String?,
+                    @RequestParam surname: String?,
+                    @RequestParam password: String?,
+                    @RequestParam confirmPassword: String?,
+                    @RequestParam description: String?,
+                    @RequestParam image: MultipartFile?): ResponseEntity<*> {
+        val response = userService.updateProfile(email,name,surname,password,confirmPassword,description,image)
+        return ResponseEntity.ok(response)
+    }
 
     @GetMapping("/find-all-by-search-text")
     fun findAllByNameAndSurname(@RequestParam searchText: String): List<UserProjection> {
         return userService.findAllBySearchText(searchText)
     }
+
 }

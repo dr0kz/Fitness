@@ -14,9 +14,12 @@ import com.sorsix.fitness.repository.PostRepository
 import com.sorsix.fitness.repository.UserFollowUserRepository
 import com.sorsix.fitness.repository.UserLikePostRepository
 import com.sorsix.fitness.repository.UserRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
 import java.util.*
 import javax.transaction.Transactional
 
@@ -78,42 +81,43 @@ class UserService(
     }
 
     @Transactional
-    fun updateProfile(
-        id: Long, email: String?, name: String?, surname: String?,
-        password: String?, confirmPassword: String?, description: String?
-    ): Response<*> {
-        val user = userRepository.findById(id)
-        if (user.isPresent) {
-            if (email != null && email.contains("@")) {
-                if (this.userRepository.findAll().stream().noneMatch { u -> u.id != id && u.email == email }) {
-                    userRepository.updateEmail(id, email)
-                } else {
-                    return BadRequest("Email $email is already taken")
-                }
+    fun updateProfile(email: String?, name: String?, surname: String?,
+        password: String?, confirmPassword: String?, description: String?, image: MultipartFile?): Response<*> {
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        if (email != null && email != "") {
+            if (this.userRepository.findAll().stream().noneMatch { u -> u.id != user.id && u.email == email }) {
+                userRepository.updateEmail(user.id, email)
             } else {
-                return BadRequest("Email $email not valid")
+                return BadRequest("Email $email is already taken")
             }
-
-            if (name != null) userRepository.updateName(id, name)
-
-            if (surname != null) userRepository.updateSurname(id, surname)
-
-            if (description != null) userRepository.updateDescription(id, description)
-
-            if (password != null && confirmPassword != null && password == confirmPassword) {
-                val newPassword = encoder.passwordEncoderBean().encode(password)
-                userRepository.updatePassword(id, newPassword)
-            }
-
-            userRepository.save(user.get())
-            return Success("Successfully updated profile for user with id $id")
-        } else {
-            return NotFound("User with id $id does not exist")
         }
+        if (name != null && name != "") {
+            println("TREE")
+            userRepository.updateName(user.id, name)
+        }
+        if (surname != null && surname != "") userRepository.updateSurname(user.id, surname)
+        if (description != null && description != "") userRepository.updateDescription(user.id, description)
+        if (password != null && password != "" && confirmPassword != null && confirmPassword != "") {
+            if (password == confirmPassword) {
+                val newPassword = encoder.passwordEncoderBean().encode(password)
+                userRepository.updatePassword(user.id, newPassword)
+            }
+            else {
+                return BadRequest("Passwords not matching")
+            }
+        }
+
+        if(image!=null) {
+            val byteArr: ByteArray = image.bytes
+            ByteArrayInputStream(byteArr)
+            userRepository.updateImage(user.id, byteArr)
+        }
+
+        return Success(user)
     }
 
     fun findAllBySearchText(searchText: String): List<UserProjection> {
-        val searchTextToLower = searchText.lowercase(Locale.getDefault()).replace(" ", "");
+        val searchTextToLower = searchText.lowercase(Locale.getDefault()).replace(" ", "")
         return userRepository.findAllBySearchText("%$searchTextToLower%")
     }
 

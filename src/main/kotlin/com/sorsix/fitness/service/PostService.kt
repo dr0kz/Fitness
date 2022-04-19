@@ -30,7 +30,7 @@ class PostService(
     }
 
     fun findAllByUser(): List<Post> {
-        val user = SecurityContextHolder.getContext().authentication.principal as User
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
         return this.postRepository.findAllByUserId(user.id)
             .stream()
             .map { t -> t.copy(likedBy = userLikePostRepository.existsByUserIdAndPostId(user.id, t.id)) }
@@ -39,7 +39,6 @@ class PostService(
 
     fun createPost(description: String, image: MultipartFile): Post {
         val user = SecurityContextHolder.getContext().authentication.principal as User
-
 
         val byteArr: ByteArray = image.bytes
         ByteArrayInputStream(byteArr)

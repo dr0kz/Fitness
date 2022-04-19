@@ -17,6 +17,7 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun existsByEmail(email: String): Boolean?
 
+    @Transactional
     @Query(
         "select u.id as id, u.name as name, u.surname as surname, u.image as image from User u" +
                 " where concat(lower(u.name),lower(u.surname)) like :searchText"
@@ -68,5 +69,9 @@ interface UserRepository : JpaRepository<User, Long> {
     @Query("update User u set u.password = :password where u.id = :userId")
     fun updatePassword(userId: Long, password: String)
 
+    @Modifying
+    @Transactional
+    @Query("update User u set u.image = :byteArr where u.id = :userId")
+    fun updateImage(userId: Long, byteArr: ByteArray)
 
 }
