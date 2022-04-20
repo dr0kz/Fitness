@@ -113,9 +113,10 @@ class UserService(
         }
 
         val newImage = if (image != null) {
-            val byteArr = image.bytes
+            val byteArr: ByteArray = image.bytes
             ByteArrayInputStream(byteArr)
-            userRepository.updateImage(user.id, byteArr!!)
+
+            userRepository.updateImage(user.id, byteArr)
             byteArr
         } else {
             user.image

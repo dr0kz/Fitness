@@ -45,6 +45,7 @@ class AuthController(
                 userDetails.name,
                 userDetails.surname,
                 userDetails.description,
+                userDetails.image,
                 roles,
             )
         )

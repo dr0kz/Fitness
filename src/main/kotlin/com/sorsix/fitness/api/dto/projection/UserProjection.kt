@@ -4,5 +4,5 @@ interface UserProjection {
     fun getId(): Long
     fun getName(): String
     fun getSurname(): String
-    fun getImage(): String
+    fun getImage(): ByteArray
 }
