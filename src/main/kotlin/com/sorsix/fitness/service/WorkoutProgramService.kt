@@ -1,6 +1,5 @@
 package com.sorsix.fitness.service
 
-
 import com.sorsix.fitness.domain.entities.WorkoutProgram
 
 import com.sorsix.fitness.api.dto.BadRequest
@@ -24,8 +23,7 @@ class WorkoutProgramService(
     val workoutProgramRepository: WorkoutProgramRepository,
     val userRepository: UserRepository,
     val dayRepository: DayRepository,
-    val boughtProgramRepository: BoughtProgramRepository
-) {
+    val boughtProgramRepository: BoughtProgramRepository) {
 
     fun findAllWorkoutProgramsByTrainerId(trainerId: Long) =
         this.workoutProgramRepository.findAllByUserTrainerId(trainerId)
@@ -38,8 +36,7 @@ class WorkoutProgramService(
         price: Int,
         description: String,
         userTrainerId: Long,
-        days: List<DayRequest>
-    ): Response<*> {
+        days: List<DayRequest>): Response<*> {
         val user = this.userRepository.findById(userTrainerId)
         if (user.isEmpty) {
             return BadRequest("User with id $userTrainerId was not found")

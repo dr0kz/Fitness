@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 import javax.transaction.Transactional
 
-
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
 
@@ -18,10 +17,8 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByEmail(email: String): Boolean?
 
     @Transactional
-    @Query(
-        "select u.id as id, u.name as name, u.surname as surname, u.image as image from User u" +
-                " where concat(lower(u.name),lower(u.surname)) like :searchText"
-    )
+    @Query("select u.id as id, u.name as name, u.surname as surname, u.image as image from User u" +
+            " where concat(lower(u.name),lower(u.surname)) like :searchText")
     fun findAllBySearchText(searchText: String): List<UserProjection>
 
     @Modifying

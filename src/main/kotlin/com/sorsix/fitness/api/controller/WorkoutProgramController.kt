@@ -1,3 +1,5 @@
+package com.sorsix.fitness.api.controller
+
 import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
