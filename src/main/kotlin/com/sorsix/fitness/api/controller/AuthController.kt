@@ -29,26 +29,33 @@ class AuthController(
 
     @PostMapping("/login")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): ResponseEntity<*> {
-        val authentication: Authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
-        )
-        SecurityContextHolder.getContext().authentication = authentication
-        val jwt = jwtUtils.generateJwtToken(authentication)
-        val userDetails = authentication.principal as User
-        val roles = userDetails.authorities!!.map { item: GrantedAuthority -> item.authority }
-
-        return ResponseEntity.ok(
-            JwtResponse(
-                jwt,
-                userDetails.id,
-                userDetails.email,
-                userDetails.name,
-                userDetails.surname,
-                userDetails.description,
-                userDetails.image,
-                roles,
+        try{
+            val authentication: Authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
             )
-        )
+            SecurityContextHolder.getContext().authentication = authentication
+            val jwt = jwtUtils.generateJwtToken(authentication)
+            val userDetails = authentication.principal as User
+            val roles = userDetails.authorities!!.map { item: GrantedAuthority -> item.authority }
+
+            return ResponseEntity.ok(
+                JwtResponse(
+                    jwt,
+                    userDetails.id,
+                    userDetails.email,
+                    userDetails.name,
+                    userDetails.surname,
+                    userDetails.description,
+                    userDetails.image,
+                    roles,
+                    userDetails.followingNum,
+                    userDetails.followersNum,
+                )
+            )
+        }catch (ex: Exception){
+            return ResponseEntity.badRequest().body(ex.message)
+        }
+
     }
 
     @PostMapping("/register")

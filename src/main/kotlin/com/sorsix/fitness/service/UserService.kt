@@ -43,18 +43,22 @@ class UserService(
         }
 
         return if (userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(userFollowing.id, followerId)) {
-            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(followerId, userFollowing.id)
+            userFollowUserRepository.deleteUserFollowUserByUserFollowerIdAndUserFollowingId(
+                followerId,
+                userFollowing.id
+            )
             userRepository.updateNumberOfFollowersMinus(followerId)
             userRepository.updateNumberOfFollowingMinus(userFollowing.id)
-            userRepository.save(userFollower.get())
-            userRepository.save(userFollowing)
             Success("Ok")
         } else {
-            userFollowUserRepository.save(UserFollowUser(0L, userFollowing, userFollower.get()))
+            userFollowUserRepository.save(
+                UserFollowUser(
+                    userFollowing = userFollowing,
+                    userFollower = userFollower.get()
+                )
+            )
             userRepository.updateNumberOfFollowersPlus(followerId)
             userRepository.updateNumberOfFollowingPlus(userFollowing.id)
-            userRepository.save(userFollower.get())
-            userRepository.save(userFollowing)
             Success("Ok")
         }
     }
@@ -150,9 +154,17 @@ class UserService(
     }
 
     fun findUserById(id: Long): User? {
+        val me: User = SecurityContextHolder.getContext().authentication.principal as User
+
         val user = userRepository.findById(id)
+
         return if (user.isPresent) {
-            user.get()
+            user.get().let { t ->
+                t.copy(
+                    followedBy =
+                    userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(me.id, t.id)
+                )
+            }
         } else {
             null
         }

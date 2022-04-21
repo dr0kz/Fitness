@@ -9,6 +9,8 @@ class JwtResponse(
     val description: String,
     val image: ByteArray?,
     val roles: List<String>,
+    val followingNum: Int,
+    val followersNum: Int,
 ) {
     var tokenType = "Bearer"
 }
