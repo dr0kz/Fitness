@@ -5,4 +5,5 @@ interface WorkoutProgramProjection {
     fun getName(): String
     fun getPrice(): Int
     fun getDescription(): String
+
 }

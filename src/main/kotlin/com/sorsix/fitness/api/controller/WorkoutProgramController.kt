@@ -33,7 +33,7 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
     @PostMapping("/create")
     fun create(@RequestBody workoutProgramRequest: WorkoutProgramRequest): ResponseEntity<Response<*>> =
         with(workoutProgramRequest){
-            when(val result = workoutProgramService.create(name,price,description,userTrainerId,days)){
+            when(val result = workoutProgramService.create(name,price,description,days)){
                 is Success -> ResponseEntity.ok(Success(result.result))
                 is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
                 is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)

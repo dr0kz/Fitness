@@ -15,6 +15,7 @@ import com.sorsix.fitness.repository.DayRepository
 import com.sorsix.fitness.repository.UserRepository
 
 import com.sorsix.fitness.repository.WorkoutProgramRepository
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import kotlin.math.ceil
 
@@ -35,23 +36,24 @@ class WorkoutProgramService(
         name: String,
         price: Int,
         description: String,
-        userTrainerId: Long,
         days: List<DayRequest>): Response<*> {
-        val user = this.userRepository.findById(userTrainerId)
-        if (user.isEmpty) {
-            return BadRequest("User with id $userTrainerId was not found")
-        }
+        val user = SecurityContextHolder.getContext().authentication.principal as User
+
+
         val workoutProgram =
-            WorkoutProgram(name = name, price = price, description = description, userTrainer = user.get())
+            WorkoutProgram(name = name, price = price, description = description, userTrainer = user)
 
         this.workoutProgramRepository.save(workoutProgram)
 
+        var dayOfTheWeek = -1;
         days.stream().map { t ->
-            println((days.indexOf(t)+1) % 7)
+            dayOfTheWeek++
             Day(
-                dayOfWeek = DayOfWeek.fromInt((days.indexOf(t)) % 7), title = t.title,
+                dayOfWeek = DayOfWeek.fromInt((dayOfTheWeek) % 7),
+                title = t.title,
                 description = t.description, video = t.video,
-                workoutProgram = workoutProgram, week = ceil((days.indexOf(t)+1).toDouble() / 7).toInt()
+                workoutProgram = workoutProgram,
+                week = ceil((dayOfTheWeek+1).toDouble() / 7).toInt()
             )
         }.forEach { this.dayRepository.save(it) }
 
