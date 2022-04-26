@@ -26,9 +26,13 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
         this.workoutProgramService.findAllWorkoutProgramsByTrainerId(trainerId)
 
     @GetMapping("/{workoutProgramId}")
-    fun findByTrainer(@PathVariable workoutProgramId: Long): ResponseEntity<WorkoutProgram> =
-        this.workoutProgramService.findById(workoutProgramId)?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.notFound().build()
+    fun findByTrainer(@PathVariable workoutProgramId: Long): ResponseEntity<Response<*>> =
+        when(val result = this.workoutProgramService.findById(workoutProgramId)){
+            is Success -> ResponseEntity.ok(Success(result.result))
+            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+            is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+        }
+
 
     @PostMapping("/create")
     fun create(@RequestBody workoutProgramRequest: WorkoutProgramRequest): ResponseEntity<Response<*>> =
