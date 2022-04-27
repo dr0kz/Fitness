@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.stream.IntStream
+import kotlin.math.abs
 import kotlin.math.ceil
 
 @Service
@@ -41,18 +42,18 @@ class WorkoutProgramService(
         return if (user.get().role == Role.TRAINEE) {
             val workoutProgramAndDaysResponses: MutableList<WorkoutProgramAndDaysResponse> = mutableListOf()
             val workoutPrograms = this.boughtProgramRepository.findAllByUserId(userId)
-            workoutPrograms.forEach{t ->
+            workoutPrograms.forEach { t ->
                 val days = this.daysRepository.findAllByWorkoutProgramId(t.id)
-                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t,days)
+                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t, days)
                 workoutProgramAndDaysResponses.add(workoutProgramAndDaysResponse)
             }
             Success(workoutProgramAndDaysResponses)
         } else {
             val workoutProgramAndDaysResponses: MutableList<WorkoutProgramAndDaysResponse> = mutableListOf()
             val workoutPrograms = this.workoutProgramRepository.findAllByUserTrainerId(userId)
-            workoutPrograms.forEach{t ->
+            workoutPrograms.forEach { t ->
                 val days = this.daysRepository.findAllByWorkoutProgramId(t.id)
-                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t,days)
+                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t, days)
                 workoutProgramAndDaysResponses.add(workoutProgramAndDaysResponse)
             }
             Success(workoutProgramAndDaysResponses)
@@ -86,7 +87,8 @@ class WorkoutProgramService(
                 Day(
                     dayOfWeek = DayOfWeek.fromInt((k) % 7),
                     title = t.title,
-                    description = t.description, video = t.video,
+                    description = t.description,
+                    video = embedVideoUrl(t.video),
                     workoutProgram = workoutProgram,
                     week = ceil((k + 1).toDouble() / 7).toInt()
                 )
@@ -96,6 +98,11 @@ class WorkoutProgramService(
 
         return Success(workoutProgram)
     }
+
+    fun embedVideoUrl(videoUrl: String) =
+        videoUrl.substring(0, videoUrl.indexOf('&'))
+            .replace("watch?v=", "embed/")
+
 
     fun delete(id: Long): Response<*> {
         val workoutProgram = this.workoutProgramRepository.findById(id)
