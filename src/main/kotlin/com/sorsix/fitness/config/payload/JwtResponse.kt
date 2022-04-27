@@ -8,7 +8,7 @@ class JwtResponse(
     val surname: String,
     val description: String,
     val image: ByteArray?,
-    val roles: List<String>,
+    val role: String,
     val followingNum: Int,
     val followersNum: Int,
 ) {

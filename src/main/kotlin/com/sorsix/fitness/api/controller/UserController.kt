@@ -30,14 +30,16 @@ class UserController(val userService: UserService) {
         }
 
     @PutMapping("/edit-profile")
-    fun editProfile(@RequestParam email: String?,
-                    @RequestParam name: String?,
-                    @RequestParam surname: String?,
-                    @RequestParam password: String?,
-                    @RequestParam confirmPassword: String?,
-                    @RequestParam description: String?,
-                    @RequestParam image: MultipartFile?): ResponseEntity<*> {
-        val response = userService.updateProfile(email,name,surname,password,confirmPassword,description,image)
+    fun editProfile(
+        @RequestParam email: String?,
+        @RequestParam name: String?,
+        @RequestParam surname: String?,
+        @RequestParam password: String?,
+        @RequestParam confirmPassword: String?,
+        @RequestParam description: String?,
+        @RequestParam image: MultipartFile?
+    ): ResponseEntity<*> {
+        val response = userService.updateProfile(email, name, surname, password, confirmPassword, description, image)
         return ResponseEntity.ok(response)
     }
 
@@ -60,4 +62,11 @@ class UserController(val userService: UserService) {
     }
 
 
+    @GetMapping("/role")
+    fun getRole(): ResponseEntity<Response<*>> =
+        when (val result = userService.getRole()) {
+            is Success -> ResponseEntity.ok(Success(result.result))
+            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+            is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+        }
 }

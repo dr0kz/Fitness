@@ -6,11 +6,13 @@ import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
 import com.sorsix.fitness.api.dto.Success
+import com.sorsix.fitness.api.dto.response.WorkoutProgramAndDaysResponse
 import com.sorsix.fitness.api.dto.workout_program.DayRequest
 import com.sorsix.fitness.domain.entities.BoughtProgram
 import com.sorsix.fitness.domain.entities.Day
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.domain.enum.DayOfWeek
+import com.sorsix.fitness.domain.enum.Role
 import com.sorsix.fitness.repository.BoughtProgramRepository
 import com.sorsix.fitness.repository.DayRepository
 import com.sorsix.fitness.repository.UserRepository
@@ -27,15 +29,39 @@ class WorkoutProgramService(
     val workoutProgramRepository: WorkoutProgramRepository,
     val userRepository: UserRepository,
     val dayRepository: DayRepository,
-    val boughtProgramRepository: BoughtProgramRepository
+    val boughtProgramRepository: BoughtProgramRepository,
+    val daysRepository: DayRepository,
 ) {
 
-    fun findAllWorkoutProgramsByTrainerId(trainerId: Long) =
-        this.workoutProgramRepository.findAllByUserTrainerId(trainerId)
+    fun findAllByUserId(userId: Long): Response<*> {
+        val user = this.userRepository.findById(userId)
+        if (user.isEmpty) {
+            NotFound("User with id $userId was not found")
+        }
+        return if (user.get().role == Role.TRAINEE) {
+            val workoutProgramAndDaysResponses: MutableList<WorkoutProgramAndDaysResponse> = mutableListOf()
+            val workoutPrograms = this.boughtProgramRepository.findAllByUserId(userId)
+            workoutPrograms.forEach{t ->
+                val days = this.daysRepository.findAllByWorkoutProgramId(t.id)
+                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t,days)
+                workoutProgramAndDaysResponses.add(workoutProgramAndDaysResponse)
+            }
+            Success(workoutProgramAndDaysResponses)
+        } else {
+            val workoutProgramAndDaysResponses: MutableList<WorkoutProgramAndDaysResponse> = mutableListOf()
+            val workoutPrograms = this.workoutProgramRepository.findAllByUserTrainerId(userId)
+            workoutPrograms.forEach{t ->
+                val days = this.daysRepository.findAllByWorkoutProgramId(t.id)
+                val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t,days)
+                workoutProgramAndDaysResponses.add(workoutProgramAndDaysResponse)
+            }
+            Success(workoutProgramAndDaysResponses)
+        }
+    }
 
     fun findById(workoutProgramId: Long): Response<*> {
         val workoutProgram: Optional<WorkoutProgram> = this.workoutProgramRepository.findById(workoutProgramId)
-        if(workoutProgram.isEmpty){
+        if (workoutProgram.isEmpty) {
             return NotFound("Workout program with id $workoutProgramId was not found")
         }
         return Success(workoutProgram.get())

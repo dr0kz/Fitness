@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class DayService(val dayRepository: DayRepository) {
 
-    fun findAllByWorkoutProgramId(id: Long): Map<Int,List<Day>> =
-        this.dayRepository.findAllByWorkoutProgramId(id).groupBy { it.week }
+    fun findAllByWorkoutProgramId(id: Long): List<Day> =
+        this.dayRepository.findAllByWorkoutProgramId(id)
 
 }

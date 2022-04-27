@@ -12,5 +12,4 @@ interface BoughtProgramRepository : JpaRepository<BoughtProgram,Long> {
     @Query("select b.workoutProgram from BoughtProgram b where b.user.id = :userId")
     fun findAllByUserId(userId: Long): List<WorkoutProgram>
 
-
 }

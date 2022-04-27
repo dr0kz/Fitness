@@ -36,7 +36,7 @@ class AuthController(
             SecurityContextHolder.getContext().authentication = authentication
             val jwt = jwtUtils.generateJwtToken(authentication)
             val userDetails = authentication.principal as User
-            val roles = userDetails.authorities!!.map { item: GrantedAuthority -> item.authority }
+            val role: String = userDetails.role.toString()
 
             return ResponseEntity.ok(
                 JwtResponse(
@@ -47,7 +47,7 @@ class AuthController(
                     userDetails.surname,
                     userDetails.description,
                     userDetails.image,
-                    roles,
+                    role,
                     userDetails.followingNum,
                     userDetails.followersNum,
                 )

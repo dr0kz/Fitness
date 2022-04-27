@@ -14,7 +14,6 @@ import com.sorsix.fitness.repository.PostRepository
 import com.sorsix.fitness.repository.UserFollowUserRepository
 import com.sorsix.fitness.repository.UserLikePostRepository
 import com.sorsix.fitness.repository.UserRepository
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PathVariable
@@ -148,13 +147,19 @@ class UserService(
         return Success(temp)
     }
 
+    fun getRole(): Response<*>{
+        val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
+
+        return Success(currentUser.role)
+    }
+
     fun findAllBySearchText(searchText: String): List<UserProjection> {
         val searchTextToLower = searchText.lowercase(Locale.getDefault()).replace(" ", "")
         return userRepository.findAllBySearchText("%$searchTextToLower%")
     }
 
     fun findUserById(id: Long): User? {
-        val me: User = SecurityContextHolder.getContext().authentication.principal as User
+        val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
 
         val user = userRepository.findById(id)
 
@@ -162,7 +167,7 @@ class UserService(
             user.get().let { t ->
                 t.copy(
                     followedBy =
-                    userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(me.id, t.id)
+                    userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(currentUser.id, t.id)
                 )
             }
         } else {
