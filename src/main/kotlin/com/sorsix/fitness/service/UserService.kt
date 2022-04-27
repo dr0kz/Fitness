@@ -170,4 +170,22 @@ class UserService(
         }
     }
 
+    fun getStars():  Response<*>  {
+        val user = SecurityContextHolder.getContext().authentication.principal as User
+        return if(user.followersNum >= 100000)
+            Success(5)
+        else if (user.followersNum in 10000..99999)
+            Success(4)
+        else if (user.followersNum in 1000..9999)
+            Success(3)
+        else if (user.followersNum in 100..999)
+            Success(2)
+        else if (user.followersNum in 10..99)
+            Success(1)
+        else if (user.followersNum in 0..9)
+            Success(0)
+        else
+            NotFound("invalid number of stars")
+    }
+
 }
