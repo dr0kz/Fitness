@@ -16,6 +16,7 @@ interface WorkoutProgramRepository : JpaRepository<WorkoutProgram,Long> {
     @Query("update WorkoutProgram p set p.name = :name, p.price = :price, p.description = :description " +
             "where p.id = :workoutProgramId and p.userTrainer.id = :trainerId")
     fun updateInfo(workoutProgramId: Long, trainerId: Long, name: String, price: Int, description: String)
+    //days update
 
     @Transactional
     fun findAllByUserTrainerId(id: Long): List<WorkoutProgram>

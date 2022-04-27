@@ -9,13 +9,8 @@ import com.sorsix.fitness.domain.entities.WorkoutProgram
 import com.sorsix.fitness.service.WorkoutProgramService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/workout-program")
@@ -29,7 +24,6 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
         }
 
-
     @GetMapping("/{workoutProgramId}")
     fun findByTrainer(@PathVariable workoutProgramId: Long): ResponseEntity<Response<*>> =
         when (val result = this.workoutProgramService.findById(workoutProgramId)) {
@@ -38,11 +32,22 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
         }
 
-
     @PostMapping("/create")
     fun create(@RequestBody workoutProgramRequest: WorkoutProgramRequest): ResponseEntity<Response<*>> =
         with(workoutProgramRequest) {
             when (val result = workoutProgramService.create(name, price, description, days)) {
+                is Success -> ResponseEntity.ok(Success(result.result))
+                is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+                is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+            }
+        }
+
+    //TODO
+    @PutMapping("/edit/{workoutProgramId}")
+    fun edit(@PathVariable workoutProgramId: Long, @RequestBody workoutProgramRequest: WorkoutProgramRequest
+    ): ResponseEntity<Response<*>> =
+        with(workoutProgramRequest){
+            when(val result = workoutProgramService.create(name,price,description,days)){
                 is Success -> ResponseEntity.ok(Success(result.result))
                 is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
                 is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
@@ -60,4 +65,5 @@ class WorkoutProgramController(val workoutProgramService: WorkoutProgramService)
     @PostMapping("/buy/{workoutProgramId}")
     fun buy(@PathVariable workoutProgramId: Long) =
         this.workoutProgramService.buy(workoutProgramId)
+
 }

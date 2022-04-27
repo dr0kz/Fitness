@@ -20,4 +20,7 @@ data class WorkoutProgram(
 
     @ManyToOne
     val userTrainer: User = User(),
+
+    @Column(nullable = false)
+    val isValid: Boolean = true
 )
