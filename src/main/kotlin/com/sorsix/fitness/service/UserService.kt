@@ -32,6 +32,8 @@ class UserService(
     val encoder: PasswordEncoder
 ) {
 
+    fun getUser(): Response<*> = Success(SecurityContextHolder.getContext().authentication.principal as User)
+
     @Transactional
     fun followUnfollowUser(followerId: Long): Response<*> {
         val userFollowing: User = SecurityContextHolder.getContext().authentication.principal as User

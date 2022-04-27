@@ -21,6 +21,14 @@ class UserController(val userService: UserService) {
             is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
         }
 
+    @GetMapping("/get")
+    fun get(): ResponseEntity<Response<*>> =
+        when (val result = this.userService.getUser()) {
+            is Success -> ResponseEntity.ok(Success(result.result))
+            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(result.result))
+            is NotFound -> ResponseEntity(NotFound(result.result), HttpStatus.NOT_FOUND)
+        }
+
     @PutMapping("/muscle/{postId}")
     fun musclePost(@PathVariable postId: Long) =
         when (val result = userService.musclePost(postId)) {

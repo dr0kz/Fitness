@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.stream.IntStream
+import javax.transaction.Transactional
 import kotlin.math.abs
 import kotlin.math.ceil
 
@@ -34,6 +35,7 @@ class WorkoutProgramService(
     val daysRepository: DayRepository,
 ) {
 
+    @Transactional
     fun findAllByUserId(userId: Long): Response<*> {
         val user = this.userRepository.findById(userId)
         if (user.isEmpty) {
@@ -99,9 +101,15 @@ class WorkoutProgramService(
         return Success(workoutProgram)
     }
 
-    fun embedVideoUrl(videoUrl: String) =
-        videoUrl.substring(0, videoUrl.indexOf('&'))
-            .replace("watch?v=", "embed/")
+    fun embedVideoUrl(videoUrl: String): String {
+        return if (videoUrl.indexOf('&') == -1) {
+            videoUrl
+        } else {
+            videoUrl.substring(0, videoUrl.indexOf('&'))
+                .replace("watch?v=", "embed/")
+        }
+
+    }
 
 
     fun delete(id: Long): Response<*> {

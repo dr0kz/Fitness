@@ -2,7 +2,9 @@ package com.sorsix.fitness.service
 
 import com.sorsix.fitness.domain.entities.Post
 import com.sorsix.fitness.domain.entities.User
+import com.sorsix.fitness.domain.entities.UserFollowUser
 import com.sorsix.fitness.repository.PostRepository
+import com.sorsix.fitness.repository.UserFollowUserRepository
 import com.sorsix.fitness.repository.UserLikePostRepository
 import com.sorsix.fitness.repository.UserRepository
 import org.springframework.data.domain.PageRequest
@@ -17,13 +19,18 @@ import javax.transaction.Transactional
 class PostService(
     val postRepository: PostRepository,
     val userLikePostRepository: UserLikePostRepository,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val userFollowUserRepository: UserFollowUserRepository,
 ) {
 
     fun listAllByPage(page: Int, pageSize: Int, date: LocalDateTime): List<Post> {
         val user = SecurityContextHolder.getContext().authentication.principal as User
+        //zemi gi site postovi na useri koi gi sledime
+        //dalo postot e na user koj go sledime
+        //
         return postRepository.findAllByDateCreatedBeforeOrderByDateCreatedDesc(PageRequest.of(page, pageSize), date)
             .stream()
+            .filter{ t -> t.user.id == user.id || this.userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(user.id,t.user.id)}
             .map { t -> t.copy(likedBy = userLikePostRepository.existsByUserIdAndPostId(user.id, t.id)) }
             .toList();
     }
@@ -41,6 +48,7 @@ class PostService(
 
         return this.postRepository.findAllByUserId(id)
             .stream()
+            .filter{ t -> t.user.id == user.id || this.userFollowUserRepository.existsByUserFollowingIdAndUserFollowerId(user.id,t.user.id)}
             .map { t -> t.copy(likedBy = userLikePostRepository.existsByUserIdAndPostId(user.id, t.id)) }
             .toList()
     }
