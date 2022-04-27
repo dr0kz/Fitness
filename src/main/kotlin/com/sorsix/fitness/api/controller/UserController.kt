@@ -53,15 +53,6 @@ class UserController(val userService: UserService) {
         return userService.findUserById(id)
     }
 
-    @GetMapping("/getStars")
-    fun getStars(): ResponseEntity<*> =
-        when(val res = userService.getStars()) {
-            is Success -> ResponseEntity.ok(Success(res.result))
-            is BadRequest -> ResponseEntity.badRequest().body(BadRequest(res.result))
-            is NotFound -> ResponseEntity(NotFound(res.result), HttpStatus.NOT_FOUND)
-    }
-
-
     @GetMapping("/role")
     fun getRole(): ResponseEntity<Response<*>> =
         when (val result = userService.getRole()) {
