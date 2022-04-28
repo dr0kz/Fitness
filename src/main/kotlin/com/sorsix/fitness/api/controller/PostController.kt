@@ -1,6 +1,6 @@
 package com.sorsix.fitness.api.controller
 
-import com.sorsix.fitness.api.dto.PostUpdateRequest
+import com.sorsix.fitness.api.dto.request.PostUpdateRequest
 import com.sorsix.fitness.domain.entities.Post
 import com.sorsix.fitness.service.PostService
 import com.sorsix.fitness.service.UserService

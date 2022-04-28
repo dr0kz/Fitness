@@ -1,5 +1,6 @@
-package com.sorsix.fitness.config
+package com.sorsix.fitness.config.security
 
+import com.sorsix.fitness.service.UserDetailsServiceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -12,7 +13,6 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 
 class AuthTokenFilter : OncePerRequestFilter() {
     @Autowired

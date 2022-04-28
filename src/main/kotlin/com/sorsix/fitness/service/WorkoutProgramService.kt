@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service
 import java.util.*
 import java.util.stream.IntStream
 import javax.transaction.Transactional
-import kotlin.math.abs
 import kotlin.math.ceil
 
 @Service
@@ -32,8 +31,7 @@ class WorkoutProgramService(
     val userRepository: UserRepository,
     val dayRepository: DayRepository,
     val boughtProgramRepository: BoughtProgramRepository,
-    val daysRepository: DayRepository,
-) {
+    val daysRepository: DayRepository) {
 
     @Transactional
     fun findAllByUserId(userId: Long): Response<*> {
@@ -53,6 +51,7 @@ class WorkoutProgramService(
         } else {
             val workoutProgramAndDaysResponses: MutableList<WorkoutProgramAndDaysResponse> = mutableListOf()
             val workoutPrograms = this.workoutProgramRepository.findAllByUserTrainerId(userId)
+                .stream().filter{ t -> t.isValid}
             workoutPrograms.forEach { t ->
                 val days = this.daysRepository.findAllByWorkoutProgramId(t.id)
                 val workoutProgramAndDaysResponse = WorkoutProgramAndDaysResponse(t, days)
@@ -77,8 +76,6 @@ class WorkoutProgramService(
         days: List<DayRequest>
     ): Response<*> {
         val user = SecurityContextHolder.getContext().authentication.principal as User
-
-
         val workoutProgram =
             WorkoutProgram(name = name, price = price, description = description, userTrainer = user)
 
@@ -97,7 +94,6 @@ class WorkoutProgramService(
             }
             this.dayRepository.save(day)
         }
-
         return Success(workoutProgram)
     }
 
@@ -108,16 +104,14 @@ class WorkoutProgramService(
             videoUrl.substring(0, videoUrl.indexOf('&'))
                 .replace("watch?v=", "embed/")
         }
-
     }
-
 
     fun delete(id: Long): Response<*> {
         val workoutProgram = this.workoutProgramRepository.findById(id)
         if (workoutProgram.isEmpty) {
             return BadRequest("Workout program with id $id was not found")
         }
-        this.workoutProgramRepository.delete(workoutProgram.get())
+        this.workoutProgramRepository.markAsDeleted(workoutProgram.get().id)
         return Success(workoutProgram.get())
     }
 

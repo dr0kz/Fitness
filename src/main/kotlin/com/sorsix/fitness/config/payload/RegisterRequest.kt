@@ -1,6 +1,5 @@
-package com.sorsix.fitness.api.dto
+package com.sorsix.fitness.config.payload
 
-import com.sorsix.fitness.domain.enum.Role
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 

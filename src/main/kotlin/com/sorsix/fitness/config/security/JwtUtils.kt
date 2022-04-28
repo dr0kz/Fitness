@@ -1,19 +1,16 @@
-package com.sorsix.fitness.config
+package com.sorsix.fitness.config.security
 
 import com.sorsix.fitness.domain.entities.User
 import io.jsonwebtoken.*
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.util.*
-
 
 @Component
 class JwtUtils {
 
     private val jwtSecret: String = "bezKoderSecretKey"
-
     private val jwtExpirationMs = 86400000
 
     fun generateJwtToken(authentication: Authentication): String {

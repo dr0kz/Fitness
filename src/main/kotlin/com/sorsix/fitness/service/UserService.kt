@@ -5,7 +5,7 @@ import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
 import com.sorsix.fitness.api.dto.Success
 import com.sorsix.fitness.api.dto.projection.UserProjection
-import com.sorsix.fitness.config.PasswordEncoder
+import com.sorsix.fitness.config.security.PasswordEncoder
 import com.sorsix.fitness.domain.entities.Post
 import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.domain.entities.UserFollowUser
@@ -29,8 +29,7 @@ class UserService(
     val userLikePostRepository: UserLikePostRepository,
     val postRepository: PostRepository,
     val postService: PostService,
-    val encoder: PasswordEncoder
-) {
+    val encoder: PasswordEncoder) {
 
     fun getUser(): Response<*> = Success(SecurityContextHolder.getContext().authentication.principal as User)
 
@@ -67,7 +66,6 @@ class UserService(
     @Transactional
     fun musclePost(@PathVariable postId: Long): Response<*> {
         val user = SecurityContextHolder.getContext().authentication.principal as User
-
         val post: Optional<Post> = this.postRepository.findById(postId)
 
         if (post.isEmpty) {
@@ -91,7 +89,6 @@ class UserService(
         password: String?, confirmPassword: String?, description: String?, image: MultipartFile?
     ): Response<*> {
         val user: User = SecurityContextHolder.getContext().authentication.principal as User
-
         if (email != null && email != "") {
             if (this.userRepository.findAll().stream().noneMatch { u -> u.id != user.id && u.email == email }) {
                 userRepository.updateEmail(user.id, email)
@@ -116,7 +113,6 @@ class UserService(
                 return BadRequest("Passwords not matching")
             }
         }
-
         val newImage = if (image != null) {
             val byteArr: ByteArray = image.bytes
             ByteArrayInputStream(byteArr)
@@ -126,13 +122,11 @@ class UserService(
         } else {
             user.image
         }
-
         val newPassword = if (password != null) {
             encoder.passwordEncoderBean().encode(password)
         } else {
             user.password
         }
-
         val temp = user.copy(
             id = user.id,
             name = name ?: user.name,
@@ -145,13 +139,11 @@ class UserService(
             followersNum = user.followersNum,
             followingNum = user.followingNum
         )
-
         return Success(temp)
     }
 
     fun getRole(): Response<*>{
         val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
-
         return Success(currentUser.role)
     }
 
@@ -162,7 +154,6 @@ class UserService(
 
     fun findUserById(id: Long): User? {
         val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
-
         val user = userRepository.findById(id)
 
         return if (user.isPresent) {

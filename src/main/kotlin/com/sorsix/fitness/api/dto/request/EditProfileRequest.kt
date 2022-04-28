@@ -1,4 +1,4 @@
-package com.sorsix.fitness.api.dto
+package com.sorsix.fitness.api.dto.request
 
 data class EditProfileRequest(
     val email: String?,

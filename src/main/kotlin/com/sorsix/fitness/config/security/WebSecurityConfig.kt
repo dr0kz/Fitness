@@ -1,23 +1,6 @@
-package com.sorsix.fitness.config.com.sorsix.fitness.config
+package com.sorsix.fitness.config.security
 
-//import com.fitness.springjwt.security.jwt.AuthEntryPointJwt;
-//import com.fitness.springjwt.security.jwt.AuthTokenFilter;
-//import com.fitness.springjwt.security.services.UserDetailsServiceImpl;
-
-//@Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(
-//    // securedEnabled = true,
-//    // jsr250Enabled = true,
-//    prePostEnabled = true)
-//class WebSecurityConfig(): WebSecurityConfigurerAdapter() {
-//
-//}
-
-import com.sorsix.fitness.config.AuthEntryPointJwt
-import com.sorsix.fitness.config.AuthTokenFilter
-import com.sorsix.fitness.config.PasswordEncoder
-import com.sorsix.fitness.config.UserDetailsServiceImpl
+import com.sorsix.fitness.service.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -27,8 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -65,6 +46,5 @@ class WebSecurityConfig(
             .authorizeRequests().antMatchers("/api/**").permitAll()
             .antMatchers("/api/**").permitAll()
             .anyRequest().authenticated()
-        //http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 }

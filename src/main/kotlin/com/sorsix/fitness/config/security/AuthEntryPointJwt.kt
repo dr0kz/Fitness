@@ -1,4 +1,4 @@
-package com.sorsix.fitness.config
+package com.sorsix.fitness.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
@@ -10,7 +10,6 @@ import java.io.IOException
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 
 @Component
 class AuthEntryPointJwt : AuthenticationEntryPoint {

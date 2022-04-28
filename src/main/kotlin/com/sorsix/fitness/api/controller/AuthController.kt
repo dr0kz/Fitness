@@ -1,8 +1,8 @@
 package com.sorsix.fitness.api.controller
 
-import com.sorsix.fitness.api.dto.RegisterRequest
-import com.sorsix.fitness.config.JwtUtils
-import com.sorsix.fitness.config.PasswordEncoder
+import com.sorsix.fitness.config.payload.RegisterRequest
+import com.sorsix.fitness.config.security.JwtUtils
+import com.sorsix.fitness.config.security.PasswordEncoder
 import com.sorsix.fitness.config.payload.JwtResponse
 import com.sorsix.fitness.config.payload.LoginRequest
 import com.sorsix.fitness.config.payload.MessageResponse
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -25,7 +24,8 @@ class AuthController(
     val authenticationManager: AuthenticationManager,
     val userRepository: UserRepository,
     val encoder: PasswordEncoder,
-    val jwtUtils: JwtUtils) {
+    val jwtUtils: JwtUtils
+) {
 
     @PostMapping("/login")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): ResponseEntity<*> {
@@ -55,7 +55,6 @@ class AuthController(
         }catch (ex: Exception){
             return ResponseEntity.badRequest().body(ex.message)
         }
-
     }
 
     @PostMapping("/register")
@@ -72,7 +71,6 @@ class AuthController(
                 .body(MessageResponse("Passwords do not match"))
         }
 
-        // Create new user's account
         val user = User(
                 0L,
                 name = signUpRequest.name,
@@ -83,7 +81,6 @@ class AuthController(
             )
 
         userRepository.save<User>(user)
-
         return ResponseEntity.ok(MessageResponse("User registered successfully!"))
     }
 }
