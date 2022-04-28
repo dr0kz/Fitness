@@ -14,5 +14,4 @@ class DayController(val dayService : DayService) {
     fun findAllByWorkoutProgramId(@PathVariable workoutProgramId: Long) =
         this.dayService.findAllByWorkoutProgramId(workoutProgramId)
 
-
 }

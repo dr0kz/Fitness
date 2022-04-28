@@ -1,12 +1,10 @@
 package com.sorsix.fitness.api.dto.workout_program
 
-
 data class DayRequest(
     val title: String = "",
     val description: String = "",
-    val video: String = "",
+    val video: String = "", ) {
 
-) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

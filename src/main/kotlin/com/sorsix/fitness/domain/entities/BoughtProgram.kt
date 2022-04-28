@@ -16,5 +16,4 @@ data class BoughtProgram(
     @ManyToOne
     @JoinColumn(name = "workout_program_id")
     val workoutProgram: WorkoutProgram = WorkoutProgram()
-
 )

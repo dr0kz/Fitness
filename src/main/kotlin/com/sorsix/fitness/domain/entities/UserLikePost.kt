@@ -12,14 +12,13 @@ data class UserLikePost(
     @OnDelete(action = OnDeleteAction.CASCADE)
     val id: Long = 0L,
 
-    @ManyToOne//(cascade= [CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.DETACH])
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     val user: User = User(),
 
-    @ManyToOne//(cascade= [CascadeType.REMOVE,CascadeType.PERSIST,CascadeType.DETACH])
+    @ManyToOne
     @JoinColumn(name = "post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     val post: Post = Post(),
-
 )

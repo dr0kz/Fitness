@@ -13,7 +13,6 @@ import javax.transaction.Transactional
 @Repository
 interface PostRepository : JpaRepository<Post,Long> {
 
-
     @Transactional
     fun findAllByDateCreatedBeforeOrderByDateCreatedDesc(pageable: Pageable, date: LocalDateTime): Page<Post>
 

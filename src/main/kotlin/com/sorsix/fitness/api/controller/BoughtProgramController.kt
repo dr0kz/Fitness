@@ -4,11 +4,9 @@ import com.sorsix.fitness.api.dto.BadRequest
 import com.sorsix.fitness.api.dto.NotFound
 import com.sorsix.fitness.api.dto.Response
 import com.sorsix.fitness.api.dto.Success
-import com.sorsix.fitness.domain.entities.User
 import com.sorsix.fitness.service.BoughtProgramService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

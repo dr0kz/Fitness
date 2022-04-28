@@ -16,5 +16,4 @@ data class UserFollowUser(
     @ManyToOne
     @JoinColumn(name="user_follower_id")
     val userFollower: User = User(),
-
 )
